@@ -62,8 +62,19 @@ int main(int argc, char *argv[])
             // Le serv doit envoyer un msg au client.
             // Il peut envoyer "OK" par exemple, pour lui dire qu'il a bien reçu le msg.
             //
-        }
-    }
+
+            
+            const char *ack = "OK";
+            ssize_t sent = sendto(currentSocket, ack, strlen(ack), 0, (struct sockaddr *)&clientAddr, addrLen);
+            if (sent < 0) {
+                perror("Erreur d'ack");
+            } else {
+                printf("ack envoyé à %s\n", inet_ntoa(clientAddr.sin_addr));
+            } 
+        } 
+
+    } 
+
 
     close(currentSocket);
     return 0;

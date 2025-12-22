@@ -64,6 +64,21 @@ int main(int argc, char *argv[])
         // il faut attendre ici avec une boucle (while) jusqu'à ce qu'on lise le message
         // "OK" par exemple.
         //
+
+
+
+        char response[MAX_SIZE];
+        struct sockaddr_in fromAddr;
+        socklen_t addrLen = sizeof(fromAddr);
+        ssize_t received = recvfrom(currentSocket, response, MAX_SIZE - 1, 0, (struct sockaddr *)&fromAddr, &addrLen);
+
+        if (received < 0) {
+            perror("Erreur lors de la réception de la réponse");
+        }
+        else  {
+            response[received] = '\0'; 
+            printf("Serveur répond : %s\n", response);
+        }
     }
 
     close(currentSocket);
