@@ -17,6 +17,13 @@
 
 int main(int argc, char *argv[])
 {
+    if (argc < 2) {
+        printf(
+            "Veuillez préciser l'adresse du serveur dans les arguments de la commande.\n"
+        );
+        return 0;
+        }
+
     // Création du socket.
     const int currentSocket = socket(PF_INET, SOCK_DGRAM, 0);
     if (currentSocket < 0) {
@@ -28,8 +35,13 @@ int main(int argc, char *argv[])
     struct sockaddr_in serverAddr;
     serverAddr.sin_family = AF_INET; // ip v4 ici.
     serverAddr.sin_port = htons(PORT); // port demandé, converti en ordre de bytes réseau.
-    serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1"); // addr localhost pour se connecter au serveur.
-    // NB: on pourra demander de saisir l'adresse du serveur au tout début aussi ?
+    in_addr_t addr = inet_addr(argv[1]);
+    if (addr == INADDR_NONE) {
+        perror("L'adresse IP fournie est invalide.");
+        return 0;
+    } else {
+         serverAddr.sin_addr.s_addr = addr; 
+    }
 
     printf("Veuillez entrer votre message à chaque fois. Taille max: %d\n", MAX_SIZE);
 
