@@ -54,7 +54,7 @@ Exemple en local :
 
 ---
 
-## Partie 2 — TCP
+## Partie 2 : TCP
 
 ### Structure
 - `client_tcp.c`
