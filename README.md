@@ -41,16 +41,16 @@ gcc client_udp.c -o client_udp
 
 2. Lancer le client dans un second terminal :
 ```bash
-./client_udp [adresse_ip]
+./client_udp [adresse_ip] [port]
 ```
 
 Exemple en local :
 ```bash
-./client_udp 127.0.0.1
+./client_udp 127.0.0.1 9600
 ```
 
 - `adresse_ip` : adresse IP du serveur (`127.0.0.1` en local)
-- Le port d'écoute est fixé sur 9600 
+- `port` : port d'écoute du serveur (par défaut `9600`)
 
 ---
 
