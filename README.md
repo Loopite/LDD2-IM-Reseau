@@ -4,7 +4,7 @@
 
 
 ## Objectif du TP
-L’objectif de ce TP est de développer une communication rudimentaire entre deux processus, en adoptant une architecture de type client / serveur. La communication repose sur l’interface des sockets.
+L'objectif de ce TP est de développer une communication rudimentaire entre deux processus, en adoptant une architecture de type client / serveur. La communication repose sur l'interface des sockets.
 Une première partie est consacrée au mode UDP (datagrammes) et une seconde au mode TCP (orienté flux).
 
 
@@ -93,18 +93,18 @@ Exemple en local :
 ```
 
 - `adresse_ip` : adresse IP du serveur (`127.0.0.1` en local)
-- `port` : port d’écoute du serveur (par défaut `9600`)
+- `port` : port d'écoute du serveur (par défaut `9600`)
 
 ---
 
 
 
 # Fonctionnalités ajoutées en plus 
- - Port et adresse ip donnés en arguments (optionnels)
+ - Port et adresse IP donnés en arguments (optionnels)
  - Précision de la taille (en octets) du message
  - Vérification de l'endianness
  - Demande de nom d'utilisateur et création d'un pseudo-chat
- - Gestion de crash du serveur (si envoie d'une socket morte) et des processus zombies
+ - Gestion de crash du serveur (si envoi d'une socket morte) et des processus zombies
 
 ---
 
