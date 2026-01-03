@@ -100,6 +100,7 @@ Exemple en local :
 
 
 # Fonctionnalités ajoutées en plus 
+ - Port et adresse ip donnés en arguments (optionnels)
  - Précision de la taille (en octets du message)
  - Vérification de l'endianness
  - Demande de nom d'utilisateur et création d'un pseudo-chat
