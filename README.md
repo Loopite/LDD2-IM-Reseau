@@ -101,7 +101,7 @@ Exemple en local :
 
 # Fonctionnalités ajoutées en plus 
  - Port et adresse ip donnés en arguments (optionnels)
- - Précision de la taille (en octets du message)
+ - Précision de la taille (en octets) du message
  - Vérification de l'endianness
  - Demande de nom d'utilisateur et création d'un pseudo-chat
  - Gestion de crash du serveur (si envoie d'une socket morte) et des processus zombies
