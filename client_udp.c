@@ -13,21 +13,30 @@
 #include <string.h>
 
 #define MAX_SIZE 20
-#define PORT 9600
+int PORT = 9600;
+char *IP = "127.0.0.1";
 
 int main(int argc, char *argv[])
 {
-    if (argc < 2) {
+    if (argc >= 4) {
         printf(
-            "Veuillez préciser l'adresse du serveur dans les arguments de la commande.\n"
+            "Vous ne pouvez que préciser l'adresse ip du serveur ainsi que son port dans les arguments de la commande.\n"
         );
         return 0;
-        }
+    }
+
+    if (argc >= 2) {
+        IP = argv[1];
+    }
+
+    if (argc >= 3) {
+        PORT = (unsigned short int) atoi(argv[2]);
+    }
 
     // Création du socket.
     const int currentSocket = socket(PF_INET, SOCK_DGRAM, 0);
     if (currentSocket < 0) {
-        perror("Erreur de création de socket.");
+        printf("Erreur de création de socket.\n");
         return 0;
     }
 
@@ -35,12 +44,11 @@ int main(int argc, char *argv[])
     struct sockaddr_in serverAddr;
     serverAddr.sin_family = AF_INET; // ip v4 ici.
     serverAddr.sin_port = htons(PORT); // port demandé, converti en ordre de bytes réseau.
-    in_addr_t addr = inet_addr(argv[1]);
-    if (addr == INADDR_NONE) {
-        perror("L'adresse IP fournie est invalide.");
+    serverAddr.sin_addr.s_addr = inet_addr(IP); 
+
+    if (serverAddr.sin_addr.s_addr == INADDR_NONE) {
+        printf("L'adresse IP fournie est invalide.\n");
         return 0;
-    } else {
-         serverAddr.sin_addr.s_addr = addr; 
     }
 
     printf("Veuillez entrer votre message à chaque fois. Taille max: %d\n", MAX_SIZE);
@@ -66,7 +74,7 @@ int main(int argc, char *argv[])
         const int sending = sendto(currentSocket, message, strlen(message), 0, (struct sockaddr*) &serverAddr, sizeof(serverAddr));
         if (sending < 0)
         {
-            perror("Erreur lors de l'envoi du datagramme.");
+            printf("Erreur lors de l'envoi du datagramme.\n");
             return 0;
         }
 
@@ -76,7 +84,7 @@ int main(int argc, char *argv[])
         ssize_t received = recvfrom(currentSocket, response, MAX_SIZE - 1, 0, (struct sockaddr *)&fromAddr, &addrLen);
 
         if (received < 0) {
-            perror("Erreur lors de la réception de la réponse");
+            printf("Erreur lors de la réception de la réponse.\n");
         }
         else  {
             response[received] = '\0'; 
