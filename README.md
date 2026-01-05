@@ -36,7 +36,7 @@ gcc client_udp.c -o client_udp
 #### Exécution
 1. Lancer le serveur dans un premier terminal :
 ```bash
-./serveur_udp
+./serveur_udp [port]
 ```
 
 2. Lancer le client dans un second terminal :
@@ -45,6 +45,9 @@ gcc client_udp.c -o client_udp
 ```
 
 Exemple en local :
+```bash
+./serveur_udp 9600
+```
 ```bash
 ./client_udp 127.0.0.1 9600
 ```
@@ -79,7 +82,7 @@ gcc client_tcp.c -o client_tcp
 #### Exécution
 1. Lancer le serveur dans un premier terminal :
 ```bash
-./serveur_tcp
+./serveur_tcp [port]
 ```
 
 2. Lancer le client dans un second terminal :
@@ -88,6 +91,9 @@ gcc client_tcp.c -o client_tcp
 ```
 
 Exemple en local :
+```bash
+./serveur_tcp 9600
+```
 ```bash
 ./client_tcp 127.0.0.1 9600
 ```
