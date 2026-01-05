@@ -10,7 +10,7 @@
 #include <string.h>
 
 void error(const char *msg) {
-    fprintf(stderr, "\033[91m%s\033[0m\n", msg);
+    fprintf(stderr, "\033[91m%s\033[0m\n", msg); // On met un peu de couleur (rouge).
 }
 
 #define USERNAME_SIZE 20
@@ -136,7 +136,12 @@ int main(int argc, char *argv[]) {
             error("Erreur lors de la réception de la réponse.");
         } else {
             buffer[n] = '\0';
-            printf("Serveur répond: %s\n", buffer);
+            if (buffer[0] == 'K' && buffer[1] == '\0') {
+                printf("\033[34mLe serveur a bien reçu votre message.\033[0m\n");
+            }
+            else {
+                printf("\033[34mLe serveur a répondu: %s\033[0m\n", buffer);
+            }
         }
     }
 

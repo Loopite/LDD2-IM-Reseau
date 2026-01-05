@@ -16,7 +16,7 @@
 #define USERNAME_SIZE 20
 
 void error(const char *msg) {
-    fprintf(stderr, "\033[91m%s\033[0m\n", msg);
+    fprintf(stderr, "\033[91m%s\033[0m\n", msg); // On met un peu de couleur (rouge).
 }
 
 // Lit exactement len octets.
@@ -24,9 +24,9 @@ void error(const char *msg) {
 static int recv_exact(int fd, void *buf, size_t len) {
     size_t got = 0;
     while (got < len) {
-        ssize_t n = recv(fd, (char*)buf + got, len - got, 0);
+        ssize_t n = recv(fd, (char*) buf + got, len - got, 0);
         if (n <= 0) return 0; // Déconnecté ou erreur (sans distinction).
-        got += (size_t)n;
+        got += (size_t) n;
     }
     return 1;
 }
@@ -41,7 +41,7 @@ static int recv_packet(int fd,
                        char username_out[USERNAME_SIZE + 1],
                        char **msg_out,
                        uint16_t *msg_len_out) {
-    uint16_t net_len;
+    uint16_t net_len = 0;
 
     if (!recv_exact(fd, &net_len, 2)) return 0;
 
@@ -91,7 +91,7 @@ int main(int argc, char *argv[]) {
     // Création du socket.
     sockfd = socket(PF_INET, SOCK_STREAM, 0);
     if (sockfd < 0) {
-        perror("Erreur de création de socket.");
+        error("Erreur de création de socket.");
         return 0;
     }
 
@@ -103,7 +103,7 @@ int main(int argc, char *argv[]) {
     // Binding du socket à l'adresse.
     const int binding = bind(sockfd, (struct sockaddr *) &bindAddress, sizeof(bindAddress));
     if (binding < 0) {
-        perror("Erreur de binding");
+        error("Erreur de binding");
         close(sockfd);
         return 0;
     }
@@ -118,13 +118,13 @@ int main(int argc, char *argv[]) {
         addrLen = sizeof(clientAddr);
         newsockfd = accept(sockfd, (struct sockaddr *)&clientAddr, &addrLen);
         if (newsockfd < 0) {
-            perror("accept");
+            error("accept");
             continue;
         }
 
         pid_t pid = fork();
         if (pid < 0) {
-            perror("fork");
+            error("fork");
             close(newsockfd);
             continue;
         }
@@ -150,7 +150,12 @@ int main(int argc, char *argv[]) {
 
                 printf("Reçu de [%s] (%u octets): %s\n", username, msg_len, msg);
 
-                const char *ack = "OK";
+				// Le serveur enverra K comme réponse (comme OK). Ici,
+				// on envoie pas le message sérialisé comme ce que le client envoie (ie: taille + nom + message).
+				// De plus, ici un caractère est envoyé car il est sûr d'être correctement lu par le client et
+				// aussi directement envoyé depuis le serveur.
+                // Il pourrait aussi répondre par un autre message sérialisé. On a décidé de faire simple ici.
+                const char *ack = "K";
                 send(newsockfd, ack, strlen(ack), 0);
                 free(msg);
             }

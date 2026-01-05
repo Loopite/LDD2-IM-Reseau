@@ -46,9 +46,6 @@ gcc client_udp.c -o client_udp
 
 Exemple en local :
 ```bash
-./serveur_udp 9600
-```
-```bash
 ./client_udp 127.0.0.1 9600
 ```
 
@@ -82,7 +79,7 @@ gcc client_tcp.c -o client_tcp
 #### Exécution
 1. Lancer le serveur dans un premier terminal :
 ```bash
-./serveur_tcp [port]
+./serveur_tcp
 ```
 
 2. Lancer le client dans un second terminal :
@@ -91,9 +88,6 @@ gcc client_tcp.c -o client_tcp
 ```
 
 Exemple en local :
-```bash
-./serveur_tcp 9600
-```
 ```bash
 ./client_tcp 127.0.0.1 9600
 ```
@@ -106,11 +100,20 @@ Exemple en local :
 
 
 # Fonctionnalités ajoutées en plus 
- - Port et adresse IP donnés en arguments (optionnels)
- - Précision de la taille (en octets) du message
- - Vérification de l'endianness
- - Demande de nom d'utilisateur et création d'un pseudo-chat
- - Gestion de crash du serveur (si envoi d'une socket morte) et des processus zombies
+ - Port et adresse IP donnés en arguments (optionnels).
+ - Dans la partie II, la taille du message est plus grande que 20 octets.
+Elle peut aller jusqu'à 65 535 octets. On a créé ici un serializer et un deserializer. 
+La structure du chat est la suivante:
+   - Taille du message (2 octets, big-endian)
+   - Nom de la personne (20 octets)
+   - Message (dépend de la taille)
+   
+   Ainsi, on attend qu'on reçoive les 2 octets puis les 20 octets (l'ensemble constitue le header de notre application simple) pour
+pouvoir obtenir le message complet. Le serveur répondra par 'K' (OK) pour acquitter.
+Le serveur peut aussi voir si un client se déconnecte et gérer plusieurs clients à la fois.
+En réalité, pour des choses plus complexes, un header pourrait être: commandId (1 octet) + taille (2 octets) par exemple.
+ - Codes couleurs lors d'affichages: les erreurs sont en rouges. Sur la partie II,
+les messages envoyés ou donnés à titre d'information par le serveur sont en bleus.
 
 ---
 

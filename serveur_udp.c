@@ -11,34 +11,51 @@
 #include <netdb.h>
 
 #include <string.h>
+#include <stdlib.h>
 
 #define MAX_SIZE 20
-#define PORT 9600
+
+void error(const char *msg) {
+    fprintf(stderr, "\033[91m%s\033[0m\n", msg); // On met un peu de couleur (rouge).
+}
 
 int main(int argc, char *argv[])
 {
+    if (argc >= 3) {
+        error(
+            "Vous ne pouvez que préciser le port sur lequel le serveur écoutera dans les arguments de la commande."
+        );
+        return 0;
+    }
+
+    unsigned short int port = 9600;
+
+    if (argc >= 2) {
+        port = (unsigned short int) atoi(argv[1]);
+    }
+
     // Création du socket.
     const int currentSocket = socket(PF_INET, SOCK_DGRAM, 0);
     if (currentSocket < 0) {
-        perror("Erreur de création de socket.");
+        error("Erreur de création de socket.");
         return 0;
     }
 
     // Configuration de l'adresse de binding.
     struct sockaddr_in bindAddress;
     bindAddress.sin_family = AF_INET; // ip v4.
-    bindAddress.sin_port = htons(PORT); // port demandé, converti en ordre de bytes réseau.
+    bindAddress.sin_port = htons(port); // port demandé, converti en ordre de bytes réseau.
     bindAddress.sin_addr.s_addr = INADDR_ANY; // écoute sur toutes les interfaces réseau.
 
     // Binding du socket à l'adresse.
     const int binding = bind(currentSocket, (struct sockaddr *) &bindAddress, sizeof(bindAddress));
     if (binding < 0) {
-        perror("Erreur de binding");
+        error("Erreur de binding");
         close(currentSocket);
         return 0;
     }
 
-    printf("Le serveur écoute sur le port %d...\n", PORT);
+    printf("Le serveur écoute sur le port %d...\n", port);
 
     // On doit à présent lire tout ce qu'on reçoit.
     // Dans l'en-tête de UDP, length est un champ de 2 octets.
@@ -53,15 +70,15 @@ int main(int argc, char *argv[])
         // Réception du message.
         ssize_t received = recvfrom(currentSocket, buffer, sizeof(buffer), 0, (struct sockaddr *)&clientAddr, &addrLen);
         if (received < 0) {
-            perror("Erreur de réception");
+            error("Erreur de réception");
         } else {
             buffer[received] = '\0'; // Ajout du caractère nul pour terminer la chaîne.
             printf("Message reçu de %s:%d : %s\n", inet_ntoa(clientAddr.sin_addr), ntohs(clientAddr.sin_port), buffer);
 
-            const char *ack = "OK";
+            const char *ack = "OK"; // On se fiche de la taille du message ici, dans UDP on recevra ça d'un coup d'un seul (ou pas du tout...)
             ssize_t sent = sendto(currentSocket, ack, strlen(ack), 0, (struct sockaddr *)&clientAddr, addrLen);
             if (sent < 0) {
-                perror("Erreur d'ack");
+                error("Erreur d'ack");
             } else {
                 printf("ack envoyé à %s\n", inet_ntoa(clientAddr.sin_addr));
             }
