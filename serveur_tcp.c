@@ -103,12 +103,18 @@ int main(int argc, char *argv[]) {
     // Binding du socket à l'adresse.
     const int binding = bind(sockfd, (struct sockaddr *) &bindAddress, sizeof(bindAddress));
     if (binding < 0) {
-        error("Erreur de binding");
+        error("Erreur de binding.");
         close(sockfd);
         return 0;
     }
 
-    listen(sockfd, 3);
+    const int listening = listen(sockfd, 3);
+    if (listening < 0) {
+        error("Erreur de de listening.");
+        close(sockfd);
+        return 0;
+    }
+    
     printf("\033[34mLe serveur écoute sur le port %d.\033[0m\n", port);
 
     signal(SIGCHLD, SIG_IGN); // Règle mes problèmes de processus zombies.
