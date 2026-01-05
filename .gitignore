@@ -10,3 +10,5 @@
 # Compiled executables
 serveur_udp
 client_udp
+serveur_tcp
+client_tcp
